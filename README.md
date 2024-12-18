@@ -1,125 +1,67 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import tkinter as tk
-from tkinter import filedialog, messagebox
-from tkinter import ttk
+           AIR QUALITY ANALYSIS
+GROUP MEMBERS –
+•	Siddhesh Tripathi  - ku2407u378
+•	Rehan Khan           - ku2407u363
+•	Niraj Matai            - ku2407u341
+•	Niyati Joshi            -ku2407u342
+•	Nidhi Kotian          -ku2407u339
+
+OBJECTIVE-
+The objective of the project to visualize the AQI graph for PM2.5 and PM10 is to:
+1.	Analyze Air Quality Data: Use collected data for PM2.5 and PM10 concentration levels to assess air quality over time.
+2.	Visualize AQI Trends: Create clear, interpretable visualizations (e.g., line charts, bar graphs, or heatmaps) to show the variations in PM2.5 and PM10 concentrations over different time periods (daily, weekly, or monthly).
+3.	Compare PM2.5 and PM10 Levels: Display side-by-side comparisons of PM2.5 and PM10 concentrations to understand the differences in their impact on air quality.
+4.	Highlight AQI Categories: Color-code or annotate the graph based on AQI levels (e.g., good, moderate, unhealthy) to make it easier to understand the air quality status.
+5.	Provide Interactive Visualizations: If applicable, create an interactive dashboard for users to explore different locations, time ranges, and pollutant levels.
+This project focuses purely on presenting the AQI data for PM2.5 and PM10 visually, allowing for better interpretation and analysis of air quality without predictive modeling.
+
+LIBRARIES USED- 
+1. pandas:
+•	Purpose: Data manipulation.
+•	Functions: Reads CSV files, handles missing values, aggregates data (e.g., by city and month).
+2. matplotlib.pyplot:
+•	Purpose: Plotting graphs.
+•	Functions: Creates line plots, sets titles, labels, and grid for visualization.
+3. seaborn:
+•	Purpose: Advanced statistical plotting.
+•	Functions: Creates line plots for visualizing trends (e.g., PM2.5, PM10, AQI).
+4. tkinter:
+•	Purpose: GUI creation.
+•	Functions: Builds windows, buttons, labels, and file dialog for user interaction.
+5. tkinter.ttk:
+•	Purpose: Themed widgets for tkinter.
+•	Functions: Creates modern UI elements like comboboxes.
+6. matplotlib.backends.backend_tkagg.FigureCanvasTkAgg:
+•	Purpose: Embed matplotlib figures into tkinter.
+•	Functions: Renders plots as widgets within the tkinter window.
 
 
-# Load data
-def load_data(file_path):
-    """Load the air quality data from a CSV file."""
-    return pd.read_csv(file_path)
 
-# Clean data
-def clean_data(df):
-    """Clean the air quality data by handling missing values and ensuring proper types."""
-    df = df.dropna(subset=['PM2.5', 'PM10', 'AQI']).copy()
-    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-    df = df.dropna(subset=['Date'])
-    return df
+SUMMARY-
+The provided Python code is for an interactive air quality data analysis application built with tkinter for the graphical user interface (GUI), and pandas, matplotlib, and seaborn for data processing and visualization. Here's a summary of the key components:
+1. Data Loading and Processing:
+•	load_data(file_path): Reads a CSV file containing air quality data into a pandas DataFrame.
+•	clean_data(df): Cleans the data by dropping rows with missing values in important columns (PM2.5, PM10, AQI), and ensuring that the Date column is in the correct format.
+•	aggregate_pm_data(df): Aggregates the data by month, calculating the average PM2.5, PM10, and AQI values for each city.
+2. GUI Components:
+•	File Load Button: Lets the user load a CSV file.
+•	City Selection Dropdown: Displays a dropdown of cities after loading and processing the data.
+•	Analyze Button: When clicked, analyzes the data for the selected city and displays three visualizations.
+3. Visualizations:
+•	PM2.5 and PM10 Trends: A line graph showing trends in PM2.5 and PM10 levels over time.
+•	AQI Trends: A line graph showing trends in the Air Quality Index (AQI) over time.
+•	AQI Bucket Trends: A line graph showing the average AQI category (e.g., Good, Moderate, Severe) for each month.
+4. Error Handling:
+•	The program handles file-related errors and shows appropriate error messages if something goes wrong (e.g., file not found or data issues).
+•	It shows a warning if the selected city has insufficient data for analysis.
+5. Scrollable Graph Window:
+•	The plots are displayed in a new window, which is scrollable to accommodate large or multiple graphs.
+6. User Experience Features:
+•	After the file is loaded and processed, the city selection and analyze button are enabled.
+•	The graphs are displayed with options for smooth scrolling.
+This application enables users to load air quality data, select a city, and visualize air quality trends over time with detailed plots for PM levels, AQI, and AQI categories.
 
-# Aggregate PM data
-def aggregate_pm_data(df):
-    """Aggregate PM2.5 and PM10 data by month."""
-    df['YearMonth'] = df['Date'].dt.to_period('M')
-    return df.groupby(['YearMonth', 'City'])[['PM2.5', 'PM10', 'AQI']].mean().reset_index()
 
-# Visualize PM2.5 and PM10 trends
-def visualize_pm_trends(df, city_name):
-    """Visualize PM2.5 and PM10 trends for a specific city."""
-    city_data = df[df['City'] == city_name].copy()
-    city_data['YearMonth'] = city_data['YearMonth'].astype(str)
 
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=city_data, x='YearMonth', y='PM2.5', label='PM2.5', marker='o')
-    sns.lineplot(data=city_data, x='YearMonth', y='PM10', label='PM10', marker='o')
-    plt.title(f'Air Quality Trends (PM2.5 and PM10) in {city_name}')
-    plt.xlabel('Year-Month')
-    plt.ylabel('Concentration (µg/m³)')
-    plt.xticks(rotation=45)
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
 
-# Visualize AQI trend
-def visualize_aqi_trends(df, city_name):
-    """Visualize AQI trends for a specific city."""
-    city_data = df[df['City'] == city_name].copy()
-    city_data['YearMonth'] = city_data['YearMonth'].astype(str)
 
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=city_data, x='YearMonth', y='AQI', label='AQI', color='red', marker='o')
-    plt.title(f'AQI Trends in {city_name}')
-    plt.xlabel('Year-Month')
-    plt.ylabel('AQI')
-    plt.xticks(rotation=45)
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
-# GUI for the application
-class AirQualityApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Air Quality Data Analysis")
-        self.root.geometry("500x300")
-
-        self.df = None
-        self.pm_data = None
-
-        # Load file button
-        self.load_button = tk.Button(root, text="Load Air Quality Data", command=self.load_file)
-        self.load_button.pack(pady=20)
-
-        # City selection
-        self.city_label = tk.Label(root, text="Select a City:")
-        self.city_label.pack()
-
-        self.city_combobox = ttk.Combobox(root, state="disabled")
-        self.city_combobox.pack(pady=10)
-
-        # Analyze button
-        self.analyze_button = tk.Button(root, text="Analyze", state="disabled", command=self.analyze_data)
-        self.analyze_button.pack(pady=10)
-
-    def load_file(self):
-        """Load the CSV file and process the data."""
-        file_path = filedialog.askopenfilename(title="Select CSV File", filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")))
-
-        if file_path:
-            try:
-                # Load and process data
-                self.df = load_data(file_path)
-                self.df = clean_data(self.df)
-
-                # Aggregate data for PM trends
-                self.pm_data = aggregate_pm_data(self.df)
-
-                # Enable the city selection combobox and analyze button
-                cities = self.pm_data['City'].unique()
-                self.city_combobox['values'] = cities
-                self.city_combobox.set(cities[0])  # Default to first city
-                self.city_combobox.config(state="normal")
-                self.analyze_button.config(state="normal")
-            except FileNotFoundError:
-                messagebox.showerror("File Error", "File not found.")
-            except Exception as e:
-                messagebox.showerror("Error", str(e))
-
-    def analyze_data(self):
-        """Analyze and visualize data based on the selected city."""
-        selected_city = self.city_combobox.get()
-
-        if selected_city in self.pm_data['City'].values:
-            visualize_pm_trends(self.pm_data, selected_city)
-            visualize_aqi_trends(self.pm_data, selected_city)
-        else:
-            messagebox.showwarning("City Not Found", "Selected city is not available in the data.")
-
-# Main execution
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = AirQualityApp(root)
-    root.mainloop()
