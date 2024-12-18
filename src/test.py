@@ -26,40 +26,6 @@ def aggregate_pm_data(df):
     df['YearMonth'] = df['Date'].dt.to_period('M')
     return df.groupby(['YearMonth', 'City'])[['PM2.5', 'PM10', 'AQI']].mean().reset_index()
 
-# Visualize PM2.5 and PM10 trends
-def visualize_pm_trends(df, city_name):
-    """Visualize PM2.5 and PM10 trends for a specific city."""
-    city_data = df[df['City'] == city_name].copy()
-    city_data['YearMonth'] = city_data['YearMonth'].astype(str)
-
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=city_data, x='YearMonth', y='PM2.5', label='PM2.5', marker='o')
-    sns.lineplot(data=city_data, x='YearMonth', y='PM10', label='PM10', marker='o')
-    plt.title(f'Air Quality Trends (PM2.5 and PM10) in {city_name}')
-    plt.xlabel('Year-Month')
-    plt.ylabel('Concentration (µg/m³)')
-    plt.xticks(rotation=45)
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
-# Visualize AQI trend
-def visualize_aqi_trends(df, city_name):
-    """Visualize AQI trends for a specific city."""
-    city_data = df[df['City'] == city_name].copy()
-    city_data['YearMonth'] = city_data['YearMonth'].astype(str)
-
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=city_data, x='YearMonth', y='AQI', label='AQI', color='red', marker='o')
-    plt.title(f'AQI Trends in {city_name}')
-    plt.xlabel('Year-Month')
-    plt.ylabel('AQI')
-    plt.xticks(rotation=45)
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
 # GUI for the application
 class AirQualityApp:
     def __init__(self, root):
